@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Admin Dashboard</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<h2>Admin Dashboard – Review Analytics</h2>
+
+<p>Positive: {{ positive }}</p>
+<p>Negative: {{ negative }}</p>
+<p>Neutral: {{ neutral }}</p>
+
+<form method="POST" enctype="multipart/form-data">
+  <input type="file" name="file" required>
+  <button type="submit">Upload CSV</button>
+</form>
+
+<hr>
+
+<h3>Sentiment Distribution</h3>
+<canvas id="sentimentChart" width="400" height="300"></canvas>
+
+<hr>
+
+<h3>Top Customer Complaints</h3>
+<ul>
+    {% for word, count in complaints %}
+        <li>{{ word }} ({{ count }})</li>
+    {% endfor %}
+</ul>
+
+<hr>
+
+<h3>All Reviews</h3>
+<table border="1">
+<tr>
+    <th>Product</th>
+    <th>Review</th>
+    <th>Sentiment</th>
+</tr>
+{% for r in reviews %}
+<tr>
+    <td>{{ r.product }}</td>
+    <td>{{ r.review_text }}</td>
+    <td>{{ r.sentiment }}</td>
+</tr>
+{% endfor %}
+</table>
+
+<br>
+<a href="/admin">Upload More Reviews</a> |
+<a href="/logout">Logout</a>
+
+<script>
+const positive = {{ positive }};
+const negative = {{ negative }};
+const neutral  = {{ neutral }};
+
+new Chart(document.getElementById('sentimentChart'), {
+    type: 'pie',
+    data: {
+        labels: ['Positive', 'Negative', 'Neutral'],
+        datasets: [{
+            data: [positive, negative, neutral],
+            backgroundColor: ['#4CAF50', '#F44336', '#FFC107']
+        }]
+    }
+});
+
+new Chart(document.getElementById('sentimentBar'), {
+    type: 'bar',
+    data: {
+        labels: ['Positive', 'Negative', 'Neutral'],
+        datasets: [{
+            label: 'Number of Reviews',
+            data: [positive, negative, neutral],
+            backgroundColor: ['#4CAF50', '#F44336', '#FFC107']
+        }]
+    },
+    options: {
+        responsive: true,
+        scales: {
+            y: {
+                beginAtZero: true
+            }
+        }
+    }
+});
+</script>
+
+</body>
+</html>
