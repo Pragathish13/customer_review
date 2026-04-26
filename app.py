@@ -72,6 +72,22 @@ class Review(db.Model):
 def load_user(user_id):
     return User.query.get(int(user_id))
 
+# 1. Initialize the database and create tables
+with app.app_context():
+    db.create_all()
+    
+    # 2. Create a default admin if the database is empty
+    if not User.query.filter_by(username="admin").first():
+        hashed_pw = generate_password_hash("admin123")
+        admin_user = User(username="admin", password=hashed_pw, role="admin")
+        db.session.add(admin_user)
+        db.session.commit()
+        print("Initial admin account created: admin / admin123")
+
+@login_manager.user_loader
+def load_user(user_id):
+    return User.query.get(int(user_id))
+
 # ---------------- LOGIN ---------------- #
 
 @app.route("/", methods=["GET", "POST"])
