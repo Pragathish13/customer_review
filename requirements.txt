@@ -1,10 +1,6 @@
 flask
-flask-login
 flask-sqlalchemy
+flask-login
 pandas
-numpy
-scikit-learn==1.7.2
-nltk
-werkzeug
-joblib
+scikit-learn
 gunicorn
